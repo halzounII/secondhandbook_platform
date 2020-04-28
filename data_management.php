@@ -12,32 +12,41 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$stdName = $stdId = $textbook = $ver = $comment = "";
+$stdName = $stdId = $comment = $category = $textbookName = "";
 $price = $amount = 0;
-$inStock = $sold = FALSE;
 
-
-$table = "CREATE TABLE books (
+/* if(!debug_backtrace() and "SELECT * FROM books" == FALSE){ */
+$books = "CREATE TABLE books (
     id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     stdName VARCHAR(10) NOT NULL,
     stdId VARCHAR(9) NOT NULL,
-    textbook_name VARCHAR(50) NOT NULL,
-    ISBN TINYINT,
-    ver VARCHAR(5) NOT NULL,
-    amount TINYINT NOT NULL,
+    textbookName VARCHAR(50) NOT NULL,
+    amount TINYINT DEFAULT 1 NOT NULL,
     price SMALLINT NOT NULL,
-    stat TINYINT NOT NULL,
-    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    comment VARCHAR(100),
+    category VARCHAR(5),
+    stat TINYINT DEFAULT 0 NOT NULL,
+    regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    comment VARCHAR(100)
     )";
 
-$addBook = $conn->prepare("INSERT INTO books(stdName, stdId, textbook, ver, 
-    amount, price, inStock, sold, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$addBook->bind_param("sssssssss", $stdName, $stdId, $textbook, $ver, $amount, $price,
-    $inStock, $sold, $comment);
+$booksInf = "CREATE TABLE booksInformation(
+    bookName VARCHAR(50) NOT NULL,
+    ver VARCHAR(10),
+    pic BLOB,
+    )";
 
-$addBook->close();
-$conn->close();
+$conn->query($booksInf);
+if($conn->query($books) === TRUE) {
+    echo "Table created successfully<br>";
+} else {
+    echo "Error creating table: " . $conn->error . "<br>";
+}
+
+$addBook = $conn->prepare("INSERT INTO books(stdName, stdId, textbookName,amount, 
+    price, category, comment) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$addBook->bind_param("ssssssss", $stdName, $stdId, $textbookName, $amount,
+    $price, $category, $comment);
+
 ?>
 </body>
 </html>
