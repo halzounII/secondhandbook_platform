@@ -20,33 +20,27 @@ $books = "CREATE TABLE books (
     id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     stdName VARCHAR(10) NOT NULL,
     stdId VARCHAR(9) NOT NULL,
+    sellerId SMALLINT NOT NULL,
     textbookName VARCHAR(50) NOT NULL,
-    amount TINYINT DEFAULT 1 NOT NULL,
     price SMALLINT NOT NULL,
     category VARCHAR(5),
     stat TINYINT DEFAULT 0 NOT NULL,
     regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     comment VARCHAR(100)
     )";
-
+/*
 $booksInf = "CREATE TABLE booksInformation(
     bookName VARCHAR(50) NOT NULL,
     ver VARCHAR(10),
     pic BLOB,
     )";
-
+*/
 $conn->query($booksInf);
 if($conn->query($books) === TRUE) {
     echo "Table created successfully<br>";
 } else {
     echo "Error creating table: " . $conn->error . "<br>";
 }
-
-$addBook = $conn->prepare("INSERT INTO books(stdName, stdId, textbookName,amount, 
-    price, category, comment) VALUES (?, ?, ?, ?, ?, ?, ?)");
-$addBook->bind_param("ssssssss", $stdName, $stdId, $textbookName, $amount,
-    $price, $category, $comment);
-
 ?>
 </body>
 </html>

@@ -13,7 +13,7 @@
           var select = document.getElementById("category");
           var inner = "<option value=0> 請選擇 </option>";
           for(var i = 0; i < category.length; i++){
-            inner = inner + '<option value=i>' + category[i] + '</option>';
+            inner = inner + '<option value=i+1>' + category[i] + '</option>';
           }
           select.innerHTML = inner;
 
@@ -28,7 +28,7 @@
             if (index <= 3){
               var subInner = "<option value=0> 請選擇 </option>";
               for(var i = 0; i < subjects[index].length; i++){
-                subInner = subInner + '<option value=i+1>' + subjects[index][i] + '</option>';
+                subInner = subInner + '<option value=i>' + subjects[index][i] + '</option>';
               }
             }
             else{
@@ -58,9 +58,6 @@
 
 </form>
 <?php
-#echo '<input type="button" onclick="alert(\'Clicky!\')"/>';
-
-require( dirname( __FILE__ ) . './data_management.php' );
 
 #verification code
 session_start(); 
@@ -77,6 +74,7 @@ else{
   Please press the Back button of your browser and try again</font></b><br>"; 
   return 1;}
 
+//require( dirname( __FILE__ ) . './有齊的database.php' );
 
 function test_input($data) {
   $data = trim($data);
@@ -85,19 +83,24 @@ function test_input($data) {
   return $data;
 }
 
+
+function regBook($stdId, $stdName, $price, $category, $textbookName){
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
     $stdId = test_input($_POST["stdId"]);
     $stdName = test_input($_POST["stdName"]);
-    $amount = test_input($_POST["amount"]);
     $price = test_input($_POST["price"]);
     $category = test_input($_POST["category"]);
     $textbookName = test_input($_POST["textbookName"]);
-    $comment = test_input($_POST["comment"]);
+  }
 }
 
+$addBook = $conn->prepare("INSERT INTO Book(stdName, stdId, textbookName, 
+    price, category, comment) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$addBook->bind_param("ssssssss", $stdName, $stdId, $textbookName,
+    $price, $category);
 $addbook->execute();
-
 $addbook->close();
+}
 $conn->close()
 ?>
 </body>
